@@ -1,0 +1,67 @@
+dict {"A":"d","B":c}
+
+The keys of the dictionary represent:
+    AAAA
+   B    C 
+   B    C 
+    DDDD  
+   E    F 
+   E    F 
+    GGGG  
+
+If "A":"d","B":"c","C":"a","F":"b" it means that in the entries
+    dddd
+   c    a
+   c    a 
+    ????  
+   ?    b 
+   ?    b 
+    ???? 
+
+should prob also have a dict to know like {"1":"ab","2":...}
+
+unique signal pattern(USP) example : "cfbaegd"
+
+Lengths:
+0:len 6 ; 1: len 2 ; 2: len 5 ; 3:len 5 ; 4:len 4 ; 5: len 5 ; 6: len 6 ; 7:len 3 ; 8: len 7; 9:len 6
+
+We know which unique signal pattern is 1,4,7,8 because of their length
+len 6: 0,6,9        len 5: 2,3,5
+
+We can use 1 and 7 to find "A"
+We can use the USP of 1 and lengths, to figure out which USP is 6 
+    if 1: "ab",check all length 6 USP and see which one does not contain both "a" and "b", that USP is 6
+    if 6 does not contain "a", then we know that "C" is "a", and "F" is "b"
+
+We now know what "A","C" and "F" is,we can use it to figure out the USP of 2,3,5
+
+If the USP is len 5:
+    if it contains only "C":
+        it is 2
+    if it contains only "F":
+        it is 5
+    if it contains both "C" and "F":
+        it is 3
+
+We can find the difference between the USP of 2 and 3, remove "F" from the difference and we can now know "E" 
+
+We can now also figure out which USP is 0 and 9
+If the USP is len 6:
+    if it contains "E":
+        it is 0
+    else:
+        it is 9
+
+Now that we know all USP of the numbers,we can just match them to the four digits.
+
+If you first sort all the USP of the numbers, so like 4: "bceg"
+
+If one of the four digits is "gcbe",you can sort it and it becomes "bceg",and you can compare it to all
+the USP of the numbers and figure out that it is 4
+
+You have to sort it first because the order of the alphabets may change,for example:
+be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
+
+Before the "|",you used the steps above and figure out that "cgeb" is 4, if you dont sort it and straight up
+compare it, you will compare "cgeb" with "gcbe" and it will not match
+

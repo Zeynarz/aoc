@@ -1,0 +1,44 @@
+class Tile(object):
+    def __init__(self,tile,tileNumber):
+        self.tiles = tile.split("\n")
+        self.tiles.remove(self.tiles[0])
+        self.tileNumber = tileNumber
+        self.border = []
+        left = []
+        right = []
+        for i in self.tiles:
+            left.append(i[0])
+            right.append(i[-1])
+        
+        self.border.append(self.tiles[0])
+        self.border.append("".join(right))
+        self.border.append(self.tiles[-1])
+        self.border.append("".join(left))
+
+    
+allTiles = []
+xTiles = []
+yTiles = []
+with open("tiles","r") as tilesFile:
+    allTilesStrings = tilesFile.read()
+    allTilesList = allTilesStrings.split("\n\n")
+
+allTilesList[-1] = allTilesList[-1][:-1]
+for tile in allTilesList:
+    tileNumber = tile[5:9]
+    tileObject = Tile(tile,tileNumber)
+    allTiles.append(tileObject)
+
+for x in allTiles:
+    for y in allTiles:
+        xNumber = x.tileNumber
+        yNumber = y.tileNumber
+        top = x.border[0]
+        bot = y.border[2]
+        left1 = x.border[1]
+        right1 = y.border[3]
+        if top == bot and xNumber != yNumber:
+            yTiles.append((xNumber,yNumber))
+        if left1 == right1 and xNumber != yNumber:
+            xTiles.append((xNumber,yNumber))
+

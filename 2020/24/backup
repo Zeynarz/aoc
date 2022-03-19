@@ -1,0 +1,55 @@
+#function to flip tile
+#e,se,sw,w,nw,ne
+class Tile(object):
+    side = True
+    def __init__(self,tileNumber):
+        self.up , self.right , self.down , self.left = None,None,None,None
+        self.tileNumber = tileNumber
+
+
+with open("puzzleInput","r") as puzzle:
+    line = puzzle.read()
+    line = line[:-1]
+    allInput = line.split("\n")
+
+#Create the tiles 100x100
+allTilesDict = {}
+times = 1
+for i in range(10):
+    if times == 1:
+        firstTile = Tile(times)
+        currentTile = firstTile
+        allTilesDict[times] = firstTile
+        print(firstTile)
+
+    currentTile = firstTile
+    for x in range(10):
+        if times % 10 == 1:
+            times += 1 
+            continue
+
+        newTile = Tile(times)
+        currentTile.right = newTile
+        currentTile = newTile
+        allTilesDict[times] = newTile
+        times += 1
+
+    newTile2 = Tile(times)
+    firstTile.down = newTile2
+    allTilesDict[times] = newTile2
+
+print(allTilesDict[11].down)
+for line in allInput:
+    try:
+        firstLetter , secondLetter = line[0], line[1]
+    except:
+        firstLetter = line[0]
+
+    if firstLetter == 'e' or 'w':
+        pass
+        line = line[1:]
+    else:
+        pass
+        line = allInput[2:]
+
+       
