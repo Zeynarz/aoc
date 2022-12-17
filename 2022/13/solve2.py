@@ -1,0 +1,127 @@
+with open("input","r") as inp:
+    packets = inp.read().replace("\n\n","\n").split("\n")[:-1]
+
+# not gonna use "eval", cause its dangerous
+def parse(string):
+    index = 0
+    toAdd = ""
+    current = []
+
+    while index < len(string):
+        char = string[index]
+        if char == "[":
+            endBracket = findEnd(string,index)
+            toAdd = parse(string[index+1:endBracket])
+            index = endBracket + 1
+
+        elif char == ",":
+            if type(toAdd) == str:
+                # int
+                toAdd = int(toAdd)
+
+            current.append(toAdd)
+            toAdd = ""
+            index += 1
+
+        else:
+            # char is an int
+            toAdd += char
+            index += 1
+
+    # Add last char
+    if toAdd != "":
+        if type(toAdd) == str:
+            toAdd = int(toAdd)
+
+        current.append(toAdd)
+
+    return current
+           
+def findEnd(string,start):
+    nesting = 0
+    for index,char in enumerate(string[start+1:]):
+        if char == "[":
+            nesting += 1
+        elif char == "]":
+            nesting -= 1
+
+        if nesting == -1:
+            return index+start+1
+
+
+# python3 can actually compare stuff like
+# [1,[2,[3,[4,[5,6,7]]]],8,9] < [1,[2,[3,[4,[5,6,0]]]],8,9
+# but Im gonna try implementing it myself
+
+# returns True if left < right
+def compare(left,right):
+    for index,leftItem in enumerate(left):
+        try:
+            rightItem = right[index]
+        except IndexError:
+            # out of bounds
+            return False
+
+        if type(leftItem) == int == type(rightItem):
+            if leftItem < rightItem:
+                return True
+            elif leftItem > rightItem:
+                return False
+
+
+        elif type(leftItem) == list or type(rightItem) == list:
+            if type(leftItem) == int:
+                leftItem = [leftItem] 
+
+            elif type(rightItem) == int:
+                rightItem = [rightItem]
+
+            result = compare(leftItem,rightItem)
+
+            if result == None:
+                continue
+            else: 
+                return result
+
+    if len(left) < len(right):
+        # after checking everything,left side ran out first
+        return True
+
+    # returning None means further checking/comparison needs to be made
+    return None
+
+
+def partition(arr,pivotIndex):
+    # sources:
+    # https://www.geeksforgeeks.org/quick-sort/
+    # https://www.khanacademy.org/computing/computer-science/algorithms/quick-sort/a/overview-of-quicksort
+
+    # move pivot to correct position, and everything less than it to its left, and everything more than it to its right
+    pivot = arr[pivotIndex]
+    i = 0 # used to move everything less than pivot to left of pivot
+
+    for j,element in enumerate(arr):
+        if compare(arr[j],pivot):
+            # smaller than pivot
+            # (actually dont even have to do this, just have to i += 1, but might as well)
+            temp = arr[i]
+            arr[i] = arr[j]
+            arr[j] = temp
+            i += 1
+
+    temp = arr[i]
+    arr[i] = pivot
+    arr[pivotIndex] = temp 
+    
+    return i
+
+
+for index,packet in enumerate(packets):
+    packets[index] = parse(packet[1:-1])
+
+packets.append([[2]])
+packets.append([[6]])
+
+first = partition(packets,-2)+1
+second = partition(packets,-1)+1
+print(first*second)
